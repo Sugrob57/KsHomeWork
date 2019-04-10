@@ -10,14 +10,20 @@ namespace WritterService
 {
     class Program
     {
+        public static ILogger Logger { get; set; }
+
         static void Main(string[] args)
         {
-            // Инициализируем службу, указываем адрес, по которому она будет доступна
-            ServiceHost host = new ServiceHost(typeof(WritterService), 
-                new Uri("http://localhost:59888/WritterService"));
-            
             try
             {
+                DBProvider _provider = new DBProvider();
+                _provider.InitializeDB();
+                Logger = new Logger();
+                Logger.Debug("1234567890");
+                
+                // Инициализируем службу, указываем адрес, по которому она будет доступна
+                ServiceHost host = new ServiceHost(typeof(WritterService),
+                    new Uri("http://localhost:59888/WritterService"));
                 // Добавляем конечную точку службы с заданным интерфейсом, привязкой (создаём новую) и адресом конечной точки
                 host.AddServiceEndpoint(typeof(IWritterService), new BasicHttpBinding(), "");
 

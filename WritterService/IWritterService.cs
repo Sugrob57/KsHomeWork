@@ -18,5 +18,8 @@ namespace WritterService
         // Умножение
         [OperationContract]
         double GetMult(double i, double j);
+
+        [OperationContract]
+        User Add(string firstName, string secondName, int gender, string dateOfBirth, string middleName = null);
     }
 }

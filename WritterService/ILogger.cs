@@ -12,6 +12,6 @@ namespace WritterService
 
         void Info(string text);
 
-        void Error(string text);
+        void Error(string text, Exception e);
     }
 }

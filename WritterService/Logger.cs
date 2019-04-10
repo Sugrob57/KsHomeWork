@@ -9,19 +9,31 @@ namespace WritterService
 {
     public class Logger : ILogger
     {
-        public void Debug(string text)
+        public Logger()
         {
-            throw new NotImplementedException();
+            //Log.Logger = new LoggerConfiguration().CreateLogger();
+
+            Log.Logger = new LoggerConfiguration()
+                //.ReadFrom.AppSettings()
+                .MinimumLevel.Debug()
+                .WriteTo.File(@"C:\log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
         }
 
-        public void Error(string text)
+
+        public void Debug(string text)
         {
-            throw new NotImplementedException();
+            Log.Debug(text);
+        }
+
+        public void Error(string text, Exception e)
+        {
+            Log.Error(text + ": " + e.Message);
         }
 
         public void Info(string text)
         {
-            throw new NotImplementedException();
+            Log.Information(text);
         }
     }
 }
