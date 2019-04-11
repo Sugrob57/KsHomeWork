@@ -21,7 +21,7 @@ namespace WritterService
         {
             try
             {
-                DBProvider _provider = new DBProvider(Program.DbPath);
+                DBProvider _provider = new DBProvider(Program.WorkPath);
                 UserId = _provider.AddUser(FirstName, SecondName, Gender, DateOfBirth.ToShortDateString(), MiddleName);
             }
             catch (Exception e)

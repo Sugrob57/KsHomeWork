@@ -12,16 +12,16 @@ namespace WritterService
     class Program
     {
         public static ServiceHost HttpHost { get; set; }
-        public static string DbPath { get; set; }
+        public static string WorkPath { get; set; }
 
         static void Main(string[] args)
         {
             try
             {
+                WorkPath = @"C:\tmp\ks";
                 // Service configure 
-                string dbPath = AppDomain.CurrentDomain.BaseDirectory + @"clientDB.db";
-                DbPath = dbPath;
-                string log_path = AppDomain.CurrentDomain.BaseDirectory + @"Writter_.log";
+                string dbPath = WorkPath + @"clientDB.db";
+                string log_path = WorkPath + @"Writter_.log";
 
                 // Serive initialize
                 InitDB(dbPath);
@@ -39,8 +39,8 @@ namespace WritterService
             {
                 Log.Fatal(e.Message);
                 Console.WriteLine(e);
-            }
-      
+                Console.ReadLine();
+            }    
         }
 
         private static void InitLogger(string log_path)
