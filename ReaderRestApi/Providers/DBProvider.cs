@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.IO;
 using ReaderRestApi.Models;
+using CoreTestApi;
+using Serilog;
 //using Serilog;
 
 namespace ReaderRestApi.Providers
@@ -14,9 +16,10 @@ namespace ReaderRestApi.Providers
         SQLiteConnection Connect { get; set; }
         string DbPath { get; set; }
 
-        public DBProvider(string dbPath)
+        public DBProvider()
         {
-            DbPath = dbPath;
+            DbPath = Startup.WorkPath + @"clientDB.db";
+
             Connect = new SQLiteConnection(@"Data Source=" + DbPath + @"; Version=3;");
         }
 
@@ -49,34 +52,67 @@ namespace ReaderRestApi.Providers
             }
         }
 
-        public List<User> GetUsers(int userId)
+        public List<User> GetUsers()
         {
             using (Connect)
             {
                 List<User> _users = new List<User>();
 
-                string commandText = "SELECT 'id','firstName', 'secondName', 'middleName', 'dateOfBirth' ,'gender'" +
+                string commandText = "SELECT id, firstName, secondName, middleName, dateOfBirth ,gender " +
                     "FROM [systemUser]";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Connect.Open(); // открыть соединение      
+                SQLiteDataReader reader = Command.ExecuteReader();
+
+                int n = 0;
+                while (reader.Read())
+                {
+                    _users.Add(new User(
+                        reader["firstname"].ToString(),
+                        reader["secondName"].ToString(),
+                        System.Convert.ToDateTime(reader["dateOfBirth"]),
+                        System.Convert.ToInt16(reader["gender"]),
+                        System.Convert.ToInt32(reader["id"]),
+                        reader["middleName"].ToString()
+                        ));
+                    n++;
+                }
+                //Log.Debug("readed {0} records from DB", n);
+
+                Connect.Close(); // закрыть соединение
+
+                return _users;
+            }
+        }
+
+        public User GetUser(int userId)
+        {
+            using (Connect)
+            {
+                User _user = new User();
+
+                string commandText = "SELECT id, firstName, secondName, middleName, dateOfBirth ,gender " +
+                    "FROM [systemUser] WHERE id = " + userId.ToString();
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Connect.Open(); // открыть соединение      
                 SQLiteDataReader reader = Command.ExecuteReader();
 
                 if (reader.Read())
                 {
-                    _users.Add(new User(
-                        reader['firstname'],
-                        reader['secondName'],
-                        reader['dateOfBirth'],
-                        reader['gender'],
-                        reader['id'],
-                        re
-                        ));
+                    _user = new User(
+                        reader["firstname"].ToString(),
+                        reader["secondName"].ToString(),
+                        System.Convert.ToDateTime(reader["dateOfBirth"]),
+                        System.Convert.ToInt16(reader["gender"]),
+                        System.Convert.ToInt32(reader["id"]),
+                        reader["middleName"].ToString()
+                        );
                 }
                 //Log.Debug("Inserted record in DB. Id new record = {0}", _userId);
 
                 Connect.Close(); // закрыть соединение
 
-                return _users;
+                return _user;
             }
         }
     }

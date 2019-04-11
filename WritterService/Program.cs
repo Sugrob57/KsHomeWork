@@ -18,8 +18,9 @@ namespace WritterService
         {
             try
             {
-                WorkPath = @"C:\tmp\ks";
                 // Service configure 
+                WorkPath = @"C:\tmp\ks\";
+                System.IO.Directory.CreateDirectory(WorkPath);
                 string dbPath = WorkPath + @"clientDB.db";
                 string log_path = WorkPath + @"Writter_.log";
 

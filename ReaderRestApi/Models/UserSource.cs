@@ -1,25 +1,49 @@
-﻿using System;
+﻿using ReaderRestApi.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace ReaderRestApi.Models
 {
     public class UserSource
     {
-        private static List<User> _users = null;
+        public UserSource()
+        {
+            _provider = new DBProvider();
+        }
+        private static DBProvider _provider { get; set; }
 
         public static List<User> All
         {
             get
             {
-                if (_users == null)
-                {
-                    _users = new List<User>();   
-                    // todo get users from db
-                }
+                List<User> _users = _provider.GetUsers();   
                 return _users;
             }
+        }
+        public static List<User> GetAll()
+        {
+            List<User> _users = new List<User>();
+            _users = _provider?.GetUsers();
+            return _users;
+        }
+
+        public static User GetUserById(int userId)
+        {
+            try
+            {
+                User _user = _provider.GetUser(userId);
+                return _user;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Get user error: {0}", e.Message);
+                return null;
+            }
+            
+            
         }
     }
 }

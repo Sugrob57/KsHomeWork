@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using Serilog;
+using ReaderRestApi.Providers;
 
 namespace CoreTestApi
 {
@@ -18,9 +20,16 @@ namespace CoreTestApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            WorkPath = Configuration["WorkPath"];
+            InitLogger(WorkPath);
+
+            DBProvider _db = new DBProvider();
+            _db.InitializeDB();
         }
 
         public IConfiguration Configuration { get; }
+        public static string WorkPath { get; set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -69,6 +78,16 @@ namespace CoreTestApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReaderRestApi V1");
                 c.RoutePrefix = string.Empty;
             });
+        }
+
+        private static void InitLogger(string log_path)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File(log_path + "ReaderApi_.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            Log.Information("Service started...");
         }
     }
 }

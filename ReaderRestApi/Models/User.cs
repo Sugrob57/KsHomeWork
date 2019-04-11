@@ -24,9 +24,7 @@ namespace ReaderRestApi.Models
             MiddleName = middleName;
         }
 
-        public User()
-        {
-            //---
-        }
+        public User() {}
+
     }
 }
