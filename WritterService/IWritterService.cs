@@ -10,15 +10,15 @@ namespace WritterService
     [ServiceContract]
     public interface IWritterService
     {
-        // 2 метода, которые будем запрашивать у службы
-        // Сложение
-        [OperationContract]
-        double GetSum(double i, double j);
-
-        // Умножение
-        [OperationContract]
-        double GetMult(double i, double j);
-
+        /// <summary>
+        /// Метод создания пользователя в БД
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="secondName"></param>
+        /// <param name="gender"></param>
+        /// <param name="dateOfBirth"></param>
+        /// <param name="middleName"></param>
+        /// <returns>Созданный пользователь</returns>
         [OperationContract]
         User Add(string firstName, string secondName, int gender, string dateOfBirth, string middleName = null);
     }

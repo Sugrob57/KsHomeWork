@@ -3,26 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace WritterService
 {
     // Реализация методов, которые описаны в интерфейсе
     public class WritterService : IWritterService
     {
-        public double GetSum(double i, double j)
-        {
-            return i + j;
-        }
-
-        public double GetMult(double i, double j)
-        {
-            return i * j;
-        }
-
         public User Add(string firstName, string secondName, int gender, string dateOfBirth, string middleName = null)
         {
-            ILogger _logger = new Logger();
-            _logger.Info("1234567890------------------------");
+            string log_info = String.Format("Get ADD request. {0} {1} {2} {3} {4}", firstName, secondName, middleName, gender, dateOfBirth);
+            Log.Information(log_info);
+            Console.WriteLine(log_info);
 
 
             User _user = new User();
@@ -33,6 +25,7 @@ namespace WritterService
             _user.DateOfBirth = System.Convert.ToDateTime(dateOfBirth);
             _user.Save();
 
+            Log.Information("User created. Id = {0}", _user.UserId);
             return _user;
         }
     }

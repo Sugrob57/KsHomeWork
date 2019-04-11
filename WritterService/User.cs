@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog;
 
 
 namespace WritterService
@@ -20,12 +21,13 @@ namespace WritterService
         {
             try
             {
-                DBProvider _provider = new DBProvider();
-                UserId = _provider.AddClient(FirstName, SecondName, Gender, DateOfBirth.ToShortDateString(), MiddleName);
+                DBProvider _provider = new DBProvider(Program.DbPath);
+                UserId = _provider.AddUser(FirstName, SecondName, Gender, DateOfBirth.ToShortDateString(), MiddleName);
             }
             catch (Exception e)
             {
-                // TODO log here
+                Log.Error("Error in process saving user in DB: {0}", e.Message);
+
                 return false;
             }
             

@@ -5,36 +5,37 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.IO;
+using Serilog;
 
 namespace WritterService
 {
     public class DBProvider
     {
         SQLiteConnection Connect { get; set; }
+        string DbPath { get; set; }
 
-        public DBProvider()
+        public DBProvider(string dbPath)
         {
-            Connect = new SQLiteConnection(@"Data Source=C:\clientDB.db; Version=3;");
+            DbPath = dbPath;
+            Connect = new SQLiteConnection(@"Data Source=" + DbPath + @"; Version=3;");
         }
-
 
         public void InitializeDB()
         {
-            if (!File.Exists(@"C:\clientDB.db")) // если базы данных нету, то...
+            if (!File.Exists(DbPath)) // если базы данных нету, то...
             {
-                SQLiteConnection.CreateFile(@"C:\clientDB.db");
+                SQLiteConnection.CreateFile(DbPath);
+                Log.Information("Create DB in path:" + DbPath);
             }
-
-            Connect = new SQLiteConnection(@"Data Source=C:\clientDB.db; Version=3;");
-            CreateDB();
+            CreateTables();
         }
 
-        private void CreateDB()
+        private void CreateTables()
         {
             using (Connect)
             {
                 // строка запроса, который надо будет выполнить
-                string commandText = "CREATE TABLE IF NOT EXISTS [Client] ( " +
+                string commandText = "CREATE TABLE IF NOT EXISTS [systemUser] ( " +
                     "[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     "[firstName] NVARCHAR(50), " +
                     "[secondName] NVARCHAR(50), " +
@@ -48,11 +49,11 @@ namespace WritterService
             }         
         }
 
-        public int AddClient(string firstName, string secondName, int gender, string dateOfBirth, string middleName = null)
+        public int AddUser(string firstName, string secondName, int gender, string dateOfBirth, string middleName = null)
         {
             using (Connect)
             {
-                string commandText = String.Format("INSERT INTO [Client] ('firstName', 'secondName', 'middleName', 'dateOfBirth' ,'gender')" +
+                string commandText = String.Format("INSERT INTO [systemUser] ('firstName', 'secondName', 'middleName', 'dateOfBirth' ,'gender')" +
                     "values ('{0}','{1}','{2}','{3}','{4}')", firstName, secondName, gender, dateOfBirth, middleName);
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Connect.Open(); // открыть соединение
@@ -67,6 +68,7 @@ namespace WritterService
                 {
                     _userId = System.Convert.ToInt32(reader["id"]);
                 }
+                Log.Debug("Inserted record in DB. Id new record = {0}", _userId);
 
                 Connect.Close(); // закрыть соединение
 
