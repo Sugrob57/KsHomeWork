@@ -16,17 +16,21 @@ namespace WritterService
             Log.Information(log_info);
             Console.WriteLine(log_info);
 
-
             User _user = new User();
             _user.FirstName = firstName;
             _user.SecondName = secondName;
             _user.MiddleName = middleName;
             _user.Gender = gender;
             _user.DateOfBirth = System.Convert.ToDateTime(dateOfBirth);
-            _user.Save();
-
-            Log.Information("User created. Id = {0}", _user.UserId);
-            return _user;
+            if (_user.Save())
+            {
+                Log.Information("User created. Id = {0}", _user.UserId);
+                return _user;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

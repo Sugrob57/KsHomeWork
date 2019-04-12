@@ -7,7 +7,6 @@ using System.IO;
 using ReaderRestApi.Models;
 using CoreTestApi;
 using Serilog;
-//using Serilog;
 
 namespace ReaderRestApi.Providers
 {
@@ -19,18 +18,23 @@ namespace ReaderRestApi.Providers
         public DBProvider()
         {
             DbPath = Startup.WorkPath + @"clientDB.db";
-
             Connect = new SQLiteConnection(@"Data Source=" + DbPath + @"; Version=3;");
         }
 
         public void InitializeDB()
         {
-            if (!File.Exists(DbPath)) // если базы данных нету, то...
+            Log.Debug("Search DB file in path {0}", DbPath);
+            if (!File.Exists(DbPath)) // если базы данных нет, то...
             {
                 SQLiteConnection.CreateFile(DbPath);
-                //Log.Information("Create DB in path:" + DbPath);
+                Log.Debug("Create DB in path:" + DbPath);
+                CreateTables();
             }
-            CreateTables();
+            else
+            {
+                Log.Debug("DB file is exist");
+            }
+            
         }
 
         private void CreateTables()
@@ -43,7 +47,7 @@ namespace ReaderRestApi.Providers
                     "[firstName] NVARCHAR(50), " +
                     "[secondName] NVARCHAR(50), " +
                     "[middleName] NVARCHAR(50), " +
-                    "[dateOfBirth] DATE," +
+                    "[dateOfBirth] NVARCHAR(10)," +
                     "[gender] INTEGER)"; // создать таблицу, если её нет
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Connect.Open(); // открыть соединение
@@ -52,11 +56,12 @@ namespace ReaderRestApi.Providers
             }
         }
 
-        public List<User> GetUsers()
+        public List<List<object>> GetUsers()
         {
+            CheckConnect();
             using (Connect)
             {
-                List<User> _users = new List<User>();
+                List<List<object>> _users = new List<List<object>>();
 
                 string commandText = "SELECT id, firstName, secondName, middleName, dateOfBirth ,gender " +
                     "FROM [systemUser]";
@@ -67,17 +72,20 @@ namespace ReaderRestApi.Providers
                 int n = 0;
                 while (reader.Read())
                 {
-                    _users.Add(new User(
-                        reader["firstname"].ToString(),
-                        reader["secondName"].ToString(),
-                        System.Convert.ToDateTime(reader["dateOfBirth"]),
-                        System.Convert.ToInt16(reader["gender"]),
-                        System.Convert.ToInt32(reader["id"]),
-                        reader["middleName"].ToString()
-                        ));
+                    _users.Add(
+                        new List<object>
+                            {
+                                reader["firstname"],
+                                reader["secondName"],
+                                reader["dateOfBirth"],
+                                reader["gender"],
+                                reader["id"],
+                                reader["middleName"]
+                            }
+                        );
                     n++;
                 }
-                //Log.Debug("readed {0} records from DB", n);
+                Log.Debug("readed {0} records from DB", n);
 
                 Connect.Close(); // закрыть соединение
 
@@ -87,6 +95,7 @@ namespace ReaderRestApi.Providers
 
         public User GetUser(int userId)
         {
+            CheckConnect();
             using (Connect)
             {
                 User _user = new User();
@@ -113,6 +122,18 @@ namespace ReaderRestApi.Providers
                 Connect.Close(); // закрыть соединение
 
                 return _user;
+            }
+        }
+
+        private void CheckConnect()
+        {
+            try
+            {
+                var st = Connect.State;
+            }
+            catch (ObjectDisposedException)
+            {
+                Connect = new SQLiteConnection(@"Data Source=" + DbPath + @"; Version=3;");
             }
         }
     }

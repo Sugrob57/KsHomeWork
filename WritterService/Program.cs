@@ -12,20 +12,20 @@ namespace WritterService
     class Program
     {
         public static ServiceHost HttpHost { get; set; }
-        public static string WorkPath { get; set; }
+        public static string DbPath { get; set; }
 
         static void Main(string[] args)
         {
             try
             {
                 // Service configure 
-                WorkPath = @"C:\tmp\ks\";
-                System.IO.Directory.CreateDirectory(WorkPath);
-                string dbPath = WorkPath + @"clientDB.db";
-                string log_path = WorkPath + @"Writter_.log";
+                string _workPath = @"C:\tmp\ks\";
+                System.IO.Directory.CreateDirectory(_workPath);
+                DbPath = _workPath + @"clientDB.db";
+                string log_path = _workPath + @"Writter_.log";
 
                 // Serive initialize
-                InitDB(dbPath);
+                InitDB(DbPath);
                 InitLogger(log_path);
                 InitSoapService();
                 

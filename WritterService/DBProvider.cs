@@ -40,7 +40,7 @@ namespace WritterService
                     "[firstName] NVARCHAR(50), " +
                     "[secondName] NVARCHAR(50), " +
                     "[middleName] NVARCHAR(50), " +
-                    "[dateOfBirth] DATE," +
+                    "[dateOfBirth] NVARCHAR(10)," +
                     "[gender] INTEGER)"; // создать таблицу, если её нет
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Connect.Open(); // открыть соединение
@@ -53,6 +53,7 @@ namespace WritterService
         {
             using (Connect)
             {
+
                 string commandText = String.Format("INSERT INTO [systemUser] ('firstName', 'secondName', 'middleName', 'dateOfBirth' ,'gender')" +
                     "values ('{0}','{1}','{2}','{3}','{4}')", firstName, secondName, gender, dateOfBirth, middleName);
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
@@ -67,12 +68,15 @@ namespace WritterService
                 if (reader.Read())
                 {
                     _userId = System.Convert.ToInt32(reader["id"]);
+                    Log.Debug("Inserted record in DB. Id new record = {0}", _userId);
+                    Connect.Close();
+                    return _userId;
                 }
-                Log.Debug("Inserted record in DB. Id new record = {0}", _userId);
-
-                Connect.Close(); // закрыть соединение
-
-                return _userId;
+                else
+                {
+                    Connect.Close();
+                    throw new NullReferenceException();
+                }
             }
         }
     }

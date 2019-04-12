@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using CoreTestApi.Models;
 using System.Net.Http;
 using System.Web.Http;
 using System.Net;
@@ -19,28 +18,36 @@ namespace CoreTestApi.Controllers
     public class UserController : ControllerBase
     {
         /// <summary>
-        /// get all topics
+        /// get all users
         /// </summary>
-        /// <returns>all Topics</returns>
-        /// <response code="200">Returns all item</response>
+        /// <returns>All users</returns>
+        /// <response code="200">Returns all users</response>
         [HttpGet]
         public ActionResult<IEnumerable<User>> Get()
         {
             Log.Information("GET request for all users");
             List<User> _users = new List<User>();
-            _users = UserSource.GetAll();
-            //Log.Debug("returned {0} users", _users.Count);
+            if (UserSource.GetAll(out _users))
+            {
+                Log.Debug("returned {0} users", _users.Count);
+                return Ok(_users);
+            }
+            else
+            {
+                Log.Information("User not found");
+                return NotFound();
+            }
 
-            return _users;
+            
         }
 
         /// <summary>
-        /// get topic 
+        /// get user
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns>return item from Topic</returns>
-        /// <response code="200">Returns the selected item</response>
-        /// <response code="404">Not found uservby id</response>
+        /// <returns>return user by id</returns>
+        /// <response code="200">Returns the selected user</response>
+        /// <response code="404">Not found user by id</response>
         [HttpGet("{userId}")]
         public ActionResult<string> Get(int userId)
         {

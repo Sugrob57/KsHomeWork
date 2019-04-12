@@ -21,17 +21,15 @@ namespace WritterService
         {
             try
             {
-                DBProvider _provider = new DBProvider(Program.WorkPath);
-                UserId = _provider.AddUser(FirstName, SecondName, Gender, DateOfBirth.ToShortDateString(), MiddleName);
+                DBProvider _provider = new DBProvider(Program.DbPath);
+                UserId = _provider.AddUser(FirstName, SecondName, Gender, DateOfBirth.ToString("yyyy-MM-dd"), MiddleName);
+                return true;
             }
             catch (Exception e)
             {
                 Log.Error("Error in process saving user in DB: {0}", e.Message);
-
                 return false;
             }
-            
-            return true;
         }
     }
 }
