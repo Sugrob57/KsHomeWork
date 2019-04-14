@@ -55,7 +55,7 @@ namespace CoreTestApi.Controllers
             try
             {
                 User _user = UserSource.GetUserById(userId);
-                if (_user == null)
+                if (_user.UserId == 0)
                 {
                     Log.Information("User not found");
                     return NotFound();
