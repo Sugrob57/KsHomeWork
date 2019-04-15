@@ -10,7 +10,7 @@ using Serilog;
 namespace WritterService
 {
     public class DBProvider
-    {
+    { // Работа с БД SQLLite
         SQLiteConnection Connect { get; set; }
         string DbPath { get; set; }
 
@@ -22,7 +22,7 @@ namespace WritterService
 
         public void InitializeDB()
         {
-            if (!File.Exists(DbPath)) // если базы данных нету, то...
+            if (!File.Exists(DbPath)) // если базы данных нету, то создадим ее
             {
                 SQLiteConnection.CreateFile(DbPath);
                 Log.Information("Create DB in path:" + DbPath);
@@ -30,11 +30,10 @@ namespace WritterService
             CreateTables();
         }
 
-        private void CreateTables()
+        private void CreateTables() // создание таблиц в новой БД
         {
             using (Connect)
             {
-                // строка запроса, который надо будет выполнить
                 string commandText = "CREATE TABLE IF NOT EXISTS [systemUser] ( " +
                     "[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     "[firstName] NVARCHAR(50), " +
@@ -53,8 +52,7 @@ namespace WritterService
         {
             using (Connect)
             {
-
-                string commandText = String.Format("INSERT INTO [systemUser] ('firstName', 'secondName', 'middleName', 'dateOfBirth' ,'gender')" +
+                string commandText = String.Format("INSERT INTO [systemUser] ('firstName', 'secondName' ,'gender', 'dateOfBirth', 'middleName')" +
                     "values ('{0}','{1}','{2}','{3}','{4}')", firstName, secondName, gender, dateOfBirth, middleName);
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Connect.Open(); // открыть соединение
@@ -69,15 +67,25 @@ namespace WritterService
                 {
                     _userId = System.Convert.ToInt32(reader["id"]);
                     Log.Debug("Inserted record in DB. Id new record = {0}", _userId);
-                    Connect.Close();
+                    //Connect.Close();
                     return _userId;
                 }
                 else
                 {
-                    Connect.Close();
+                    //Connect.Close();
                     throw new NullReferenceException();
                 }
             }
+        }
+
+        public void CloseDB()
+        {
+            try
+            {
+                Connect.Close();
+            }
+            catch { }
+            
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NUnitAutoTests.Helpers
 {
-    class JsonParser
+    class JsonParser // извлечение значений из JSON используя Linq
     {
         private static JObject ParseString2Json(string str)
         {

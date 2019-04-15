@@ -16,21 +16,48 @@ namespace WritterService
             Log.Information(log_info);
             Console.WriteLine(log_info);
 
-            User _user = new User();
-            _user.FirstName = firstName;
-            _user.SecondName = secondName;
-            _user.MiddleName = middleName;
-            _user.Gender = gender;
-            _user.DateOfBirth = System.Convert.ToDateTime(dateOfBirth);
-            if (_user.Save())
+            try
             {
-                Log.Information("User created. Id = {0}", _user.UserId);
-                return _user;
+                User _user = new User();
+                _user.FirstName = CheckNullValue(firstName);
+                _user.SecondName = CheckNullValue(secondName);
+                _user.MiddleName = middleName;
+
+
+                _user.Gender = CheckGenderValue(gender);
+                _user.DateOfBirth = System.Convert.ToDateTime(CheckNullValue(dateOfBirth));
+                if (_user.Save())
+                {
+                    Log.Information("User created. Id = {0}", _user.UserId);
+                    return _user;
+                }
             }
+            catch (Exception e)
+            {
+                string txt = "Bad request. Error: " + e.Message;
+                Log.Error(txt);
+            }
+            return null;
+
+        }
+
+        private static int CheckGenderValue(int value)
+        {
+            if ((value == 0) || (value == 1))
+                return value;
             else
-            {
-                return null;
-            }
+                throw new NullReferenceException();
+        }
+
+        private static string CheckNullValue(string value)
+        {
+            value.Trim();
+            if (value == "")
+                throw new NullReferenceException();
+            else
+                return value;
         }
     }
+
+
 }

@@ -10,14 +10,15 @@ namespace WritterService
 {
     public class User
     {
-        public string FirstName { get; set; }
-        public string SecondName { get; set; }
-        public string MiddleName { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public int Gender { get; set; }
-        public int UserId { get; set; }
+        // Класс, описывающий модель данных - Пользователь
+        public string FirstName { get; set; } // Имя
+        public string SecondName { get; set; } // Фамилия
+        public string MiddleName { get; set; } // Отчетство
+        public DateTime DateOfBirth { get; set; } // дата рождения
+        public int Gender { get; set; } // пол (0 - ж, 1 - м)
+        public int UserId { get; set; } // идентификатор пользователя в БД
 
-        public bool Save()
+        public bool Save() // метод сохранения объекта в БД
         {
             try
             {

@@ -10,7 +10,7 @@ using Serilog;
 
 namespace ReaderRestApi.Providers
 {
-    public class DBProvider
+    public class DBProvider  // работа с БД
     {
         SQLiteConnection Connect { get; set; }
         string DbPath { get; set; }
@@ -63,31 +63,36 @@ namespace ReaderRestApi.Providers
             {
                 List<List<object>> _users = new List<List<object>>();
 
-                string commandText = "SELECT id, firstName, secondName, middleName, dateOfBirth ,gender " +
+                string commandText = "SELECT [id], [firstName], [secondName], [dateOfBirth], [gender], [middleName] " +
                     "FROM [systemUser]";
-                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
-                Connect.Open(); // открыть соединение      
-                SQLiteDataReader reader = Command.ExecuteReader();
-
-                int n = 0;
-                while (reader.Read())
+                using (SQLiteCommand Command = new SQLiteCommand(commandText, Connect))
                 {
-                    _users.Add(
-                        new List<object>
-                            {
+                    Connect.Open(); // открыть соединение      
+                    using (SQLiteDataReader reader = Command.ExecuteReader())
+                    {
+                        int n = 0;
+                        while (reader.Read())
+                        {
+                            _users.Add(
+                                new List<object>
+                                    {
                                 reader["firstname"],
                                 reader["secondName"],
                                 reader["dateOfBirth"],
                                 reader["gender"],
                                 reader["id"],
                                 reader["middleName"]
-                            }
-                        );
-                    n++;
+                                    }
+                                );
+                            n++;
+                        }
+                        Log.Debug("readed {0} records from DB", n);
+                    }
                 }
-                Log.Debug("readed {0} records from DB", n);
-
+                    
+                
                 Connect.Close(); // закрыть соединение
+                Connect.Dispose();
 
                 return _users;
             }
@@ -100,27 +105,29 @@ namespace ReaderRestApi.Providers
             {
                 User _user = new User();
 
-                string commandText = "SELECT id, firstName, secondName, middleName, dateOfBirth ,gender " +
+                string commandText = "SELECT [id], [firstName], [secondName], [dateOfBirth], [gender], [middleName] " +
                     "FROM [systemUser] WHERE id = " + userId.ToString();
-                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
-                Connect.Open(); // открыть соединение      
-                SQLiteDataReader reader = Command.ExecuteReader();
-
-                if (reader.Read())
+                using (SQLiteCommand Command = new SQLiteCommand(commandText, Connect))
                 {
-                    _user = new User(
-                        reader["firstname"].ToString(),
-                        reader["secondName"].ToString(),
-                        System.Convert.ToDateTime(reader["dateOfBirth"]),
-                        System.Convert.ToInt16(reader["gender"]),
-                        System.Convert.ToInt32(reader["id"]),
-                        reader["middleName"].ToString()
-                        );
+                    Connect.Open(); // открыть соединение 
+                    using (SQLiteDataReader reader = Command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            _user = new User(
+                                reader["firstname"].ToString(),
+                                reader["secondName"].ToString(),
+                                System.Convert.ToDateTime(reader["dateOfBirth"]),
+                                System.Convert.ToInt16(reader["gender"]),
+                                System.Convert.ToInt32(reader["id"]),
+                                reader["middleName"].ToString()
+                                );
+                        }
+                    }
                 }
-                //Log.Debug("Inserted record in DB. Id new record = {0}", _userId);
-
+                        
                 Connect.Close(); // закрыть соединение
-
+                Connect.Dispose();
                 return _user;
             }
         }

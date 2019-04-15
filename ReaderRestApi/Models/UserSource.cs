@@ -16,6 +16,7 @@ namespace ReaderRestApi.Models
             _provider = new DBProvider();
         }   
 
+        // получение всех пользователей
         public static bool GetAll(out List<User> users)
         {
             users = new List<User>();
@@ -47,6 +48,7 @@ namespace ReaderRestApi.Models
             }
         }
 
+        // получение пользователя по идентификатору
         public static User GetUserById(int userId)
         {
             try

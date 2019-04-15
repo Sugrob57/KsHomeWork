@@ -28,6 +28,7 @@ namespace ReaderRestApi.Models
 
         public User() {}
 
+        // преобразование списка объектов в класс User
         public static bool Parse(List<object> obj_user, out User _user)
         {
             _user = new User();

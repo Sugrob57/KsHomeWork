@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NUnitAutoTests.Helpers.RestApi
 {
-    public class RestApiHelper
+    public class RestApiHelper // дополнительные методы для получения данных
     {
         public static string GetFirstUserId(string url)
         {

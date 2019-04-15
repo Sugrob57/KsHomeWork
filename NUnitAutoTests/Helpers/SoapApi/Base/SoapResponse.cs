@@ -4,9 +4,8 @@ using System.Text;
 
 namespace NUnitAutoTests.Helpers.SoapApi.Base
 {
-    public class SoapResponse
+    public class SoapResponse // Базовый класс SOAP-ответа
     {
-        public string HttpCode { get; set; }
         public bool IsSuccess { get; set; }
         public string Content { get; set; }
     }

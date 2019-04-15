@@ -1,5 +1,4 @@
-﻿//using SoapServiceReference;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using WritterWcfService;
 
 namespace NUnitAutoTests.Helpers.SoapApi
 {
-    public class SoapRequest
+    public class SoapRequest // Базовый класс SOAP-запроса
     {
         public string Url { get; set; }
         public static WritterServiceClient SharedClient { get; set; }

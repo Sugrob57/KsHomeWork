@@ -21,8 +21,9 @@ namespace CoreTestApi
         {
             Configuration = configuration;
 
-            WorkPath = Configuration["WorkPath"];
-            InitLogger(WorkPath);
+            WorkPath = Configuration["WorkPath"]; // получение рабочей директории
+            System.IO.Directory.CreateDirectory(WorkPath);
+            InitLogger(WorkPath); // инициализация логгера
 
             DBProvider _db = new DBProvider();
             _db.InitializeDB();

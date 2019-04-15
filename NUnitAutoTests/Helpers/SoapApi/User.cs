@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NUnitAutoTests.Helpers
+namespace NUnitAutoTests.Helpers.SoapApi
 {
     public class User
     {

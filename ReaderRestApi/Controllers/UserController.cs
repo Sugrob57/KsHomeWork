@@ -12,7 +12,6 @@ using Serilog;
 
 namespace CoreTestApi.Controllers
 {
-    //[Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase

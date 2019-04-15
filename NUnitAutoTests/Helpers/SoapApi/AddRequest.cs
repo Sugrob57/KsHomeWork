@@ -6,7 +6,7 @@ using WritterWcfService;
 
 namespace NUnitAutoTests.Helpers.SoapApi.Base
 {
-    public class AddRequest : SoapRequest
+    public class AddRequest : SoapRequest // Запрос на создание пользователя
     {
         string FirstName { get; set; }
         string SecondName { get; set; }

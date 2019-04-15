@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NUnitAutoTests.Helpers.RestApi
 {
-    public class GetRequest : RestRequest
+    public class GetRequest : RestRequest // GET REST запрос
     {
         public GetRequest(string url) : base(url)
         {
@@ -13,15 +13,6 @@ namespace NUnitAutoTests.Helpers.RestApi
 
         public RestResponse Run()
         {
-            //using (base.LocalClent)
-            //{
-                //httpClient.BaseAddress = new Uri(base.ConectionString);
-                //var converter = new IsoDateTimeConverter();
-                //converter.DateTimeStyles = DateTimeStyles.AdjustToUniversal;
-                //var json = JsonConvert.SerializeObject(body, converter);
-                //var content = new StringContent(json, Encoding.UTF8, "application/json");
-            
-
             var response = LocalClent.GetAsync(base.Url).Result;
             base.Response = new RestResponse();
             Response.Content = response.Content.ReadAsStringAsync().Result;
@@ -29,7 +20,6 @@ namespace NUnitAutoTests.Helpers.RestApi
             Response.IsSuccess = response.IsSuccessStatusCode;
 
             return Response;
-            //}
         }
     }
 }

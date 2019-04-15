@@ -10,21 +10,12 @@ namespace NUnitAutoTests.Tests.WritterTests
 {
     [TestFixture]
     class AddUserTests
+    // Тесты метода создания пользователя через SOAP интерфейс
+
+    // !!! Для использования сервиса его WSDL подключена как Referense Service
+    // см. NUnitAutoTests --> ConnectedServices --> WritterDcfService
     {
         string RequestUrl = BaseTests.WcfSoapUrl;
-
-
-        [OneTimeSetUp]
-        public void ClassSetUp()
-        {
-            //
-        }
-
-        [SetUp]
-        public void BeforeEveryTest()
-        {
-            //
-        }
 
         // Positive cases
         [TestCase(true, "Artem", "Sidoruk", 1, "2012-01-01", "Sanich")] // Создать пользователя мужского рода
@@ -43,6 +34,8 @@ namespace NUnitAutoTests.Tests.WritterTests
         [TestCase(false, "Name", "SecName", 0, "23 января 2013 года", "middleName")] // неверный формат поля DateOfBirth
         public void AddUserTest(bool expected, string firstName, string secondName, int gender, string dateOfBirth, string middleName = null)
         {
+            // проверить, что пользователи создаются (или не создаются) 
+            // при указанных входящих параметрах
             AddRequest req = new AddRequest(RequestUrl, firstName, secondName, gender, dateOfBirth, middleName);
 
             bool result = false;
@@ -56,11 +49,5 @@ namespace NUnitAutoTests.Tests.WritterTests
             Assert.AreEqual(expected, result);
         }
 
-
-        [Test]
-        public void AddBadUserTest()
-        {
-            Assert.Pass();
-        }
     }
 }

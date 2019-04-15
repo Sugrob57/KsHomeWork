@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NUnitAutoTests.Helpers.RestApi
 {
-    public class RestResponse
+    public class RestResponse // Базовый класс для ответа Rest запроса
     {
         public string Content { get; set; }
         public string HttpCode { get; set; }

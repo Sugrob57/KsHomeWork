@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NUnitAutoTests.Helpers.RestApi
 {
-    public class RestRequest
+    public class RestRequest // Базовый класс для Rest запроса
     {
         public string Url { get; set; }
         public RestResponse Response { get; set; }

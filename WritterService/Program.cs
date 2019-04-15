@@ -11,20 +11,22 @@ namespace WritterService
 {
     class Program
     {
-        public static ServiceHost HttpHost { get; set; }
-        public static string DbPath { get; set; }
+        public static ServiceHost HttpHost { get; set; } // хост, где будет расположен сервис
+        public static string DbPath { get; set; } // место хранения файла БД
+        public static string ServiceUrl { get; set; } // Ссылка для сервиса
 
         static void Main(string[] args)
         {
             try
             {
                 // Service configure 
-                string _workPath = @"C:\tmp\ks\";
+                ServiceUrl = @"http://localhost:59888/WritterService";
+                string _workPath = @"C:\tmp\ks\"; // путь к служебным файлам (БД, логи)
                 System.IO.Directory.CreateDirectory(_workPath);
                 DbPath = _workPath + @"clientDB.db";
                 string log_path = _workPath + @"Writter_.log";
 
-                // Serive initialize
+                // Инициализация сервиса
                 InitDB(DbPath);
                 InitLogger(log_path);
                 InitSoapService();
@@ -34,6 +36,7 @@ namespace WritterService
                 // Закрываем службу
 
                 HttpHost.Close();
+                CloseDB(DbPath);
                 Log.Information("Service stopped");
             }
             catch (Exception e)
@@ -44,11 +47,10 @@ namespace WritterService
             }    
         }
 
-        private static void InitLogger(string log_path)
+        private static void InitLogger(string log_path) // Активация логгера Serilog
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                //.WriteTo.File(@"C:\writter-.txt", rollingInterval: RollingInterval.Day)
                 .WriteTo.File(log_path, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
@@ -61,12 +63,18 @@ namespace WritterService
             _provider.InitializeDB();
         }
 
-        private static void InitSoapService()
+        private static void CloseDB(string dbPath)
+        {
+            DBProvider _provider = new DBProvider(dbPath);
+            _provider.CloseDB();
+        }
+
+        private static void InitSoapService() // Запуск WCF SOAP сервиса
         {
             Log.Debug("Starting service...");
             // Инициализируем службу, указываем адрес, по которому она будет доступна
             ServiceHost host = new ServiceHost(typeof(WritterService),
-                new Uri("http://localhost:59888/WritterService"));
+                new Uri(ServiceUrl));
             // Добавляем конечную точку службы с заданным интерфейсом, привязкой (создаём новую) и адресом конечной точки
             host.AddServiceEndpoint(typeof(IWritterService), new BasicHttpBinding(), "");
 
