@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using Serilog;
 using NUnitAutoTests.Helpers;
 using NUnitAutoTests.Helpers.RestApi;
 
@@ -10,22 +9,23 @@ namespace NUnitAutoTests.Tests.ReaderTests
 {
     [TestFixture]
     class GetUserListTests
+    // Тесты метода "GET /api/User"
     {
+        string RequestUrl = BaseTests.RestApiUrl + @"/api/User/"; // Ссылка к методу сервера
         GetRequest Request { get; set; }
         RestResponse Response { get; set; }
 
         [OneTimeSetUp]
         public void ClassSetUp()
         {
-            Log.Information("2. setup class fixture");
-            string url = @"http://localhost:49905/api/User";
-            Request = new GetRequest(url);
+            // При запуске модуля формируем ссылку и создаем объекты
+            Request = new GetRequest(RequestUrl);
         }
 
         [SetUp]
-        public void AfterTest()
+        public void BeforeEveryTest()
         {
-            Log.Information("3. setup for every test in class");
+            // Перед запуском наждого теста прогоняем запрос и передаем в тест его результат
             Response = Request.Run();
         }
 
