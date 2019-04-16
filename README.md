@@ -1,14 +1,14 @@
 # KsHomeWork
 WCF service + Rest service + tests
 
-# Задание:
+# Задание
 Тестовое задание состоит из 3 частей: 
 Сервисы должны работать по протоколу http. 
 Оба сервиса должны логировать запросы/ответы/ошибки через .Net библиотеку Serilog.
 Тестовое задание выполнить и прислать в виде одного солюшина (Visual Studio), который должен включать в себя оба сервиса и проект с тестами.
 
 
-# Описание данного проекта:
+# Описание данного проекта
 Проект представляет из себя  решение (Solution) из трех проектов:
    1. **WritterService** - SOAP сервис. Запускается как консольное приложение. 
    2. **ReaderApiService** - REST API .NET Core сервис. Запускается как сайт IIS
@@ -17,30 +17,31 @@ WCF service + Rest service + tests
 
 
 
-# Запуск сервисов:
+# Запуск сервисов
 ## сервис WritterService
-!!! для возможности прослушивать какой-либо порт приложению требуются права администратора;
-**1 вариант запуска**: Запустить проект (Debug -> Start (F5)) из VisualStudio открытой с правами администратора;
-**2 вариант запуска**: Запустить exe-файл "WritterService.exe" из папки "...\KsHomeWork\WritterService\bin\Debug" от имени администратора
+***Для возможности прослушивать какой-либо порт приложению требуются права администратора***
+
+* **1 вариант запуска**: Запустить проект (Debug -> Start (F5)) из VisualStudio открытой с правами администратора;
+* **2 вариант запуска**: Запустить exe-файл "WritterService.exe" из папки "...\KsHomeWork\WritterService\bin\Debug" от имени администратора;
 
 Для проверки работоспособности сервиса перейдите по ссылке: <http://localhost:59888/WritterService>
 Или подключите <http://localhost:59888/WritterService?wsdl> файл к вашему проекту и вызовите метод Add()
 
 ## ReaderApiService 
-При наличии библиотек .Net Core никаких особых действий для запуска сервиса не требуется. Просто запустите проект (Debug -> Start (F5)). 
-Проверить можно через Swagger. Откроется автоматически.
+При наличии библиотек .Net Core никаких особых действий для запуска сервиса не требуется. Просто запустите проект (Debug -> Start (F5));
+Проверить можно через Swagger - откроется автоматически.
 
 
-# Настройки сервисов:
-## сервис WritterService:
+# Настройки сервисов
+## сервис WritterService
       ServiceUrl = @"http://localhost:59888/WritterService" (Program.cs)
       string _workPath = @"C:\tmp\ks\" (Program.cs)
 
-## сервис ReaderApiService:
+## сервис ReaderApiService
       "WorkPath":  "C:/tmp/ks/"  - из файла конфигурации (appsetting.json)
       "App Url":   http://localhost:49905/  - ReaderApiService--> Propeties --> Debug
 
-## проект автотестов:
+## проект автотестов
       RestApiUrl = @"http://localhost:49905"; // Ссылка к RestApi сервису чтения данных (Tests --> BaseTests.cs)
       WcfSoapUrl = @"http://localhost:59888/WritterService"; // Ссылка к SOAP WCF сервису (Tests --> BaseTests.cs)
       "Uri":   "http://localhost:59888/WritterService?wsdl", // ссылка на контракт сервиса (Connected Services -> WritterWcfService -> ConnectedServices.json)
