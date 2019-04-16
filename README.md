@@ -7,8 +7,7 @@ WCF service + Rest service + tests
 > Оба сервиса должны логировать запросы/ответы/ошибки через .Net библиотеку Serilog.
 > Тестовое задание выполнить и прислать в виде одного солюшина (Visual Studio), который должен включать в себя оба сервиса и проект с тестами.
 
-
-# Описание данного проекта
+# Описание проекта
 Проект представляет из себя  решение (Solution) из трех проектов:
    1. **WritterService** - SOAP сервис. Запускается как консольное приложение; 
    2. **ReaderApiService** - REST API .NET Core сервис. Запускается как сайт IIS;
@@ -32,23 +31,23 @@ WCF service + Rest service + tests
 
 # Настройки сервисов
 ## сервис WritterService
-      ```
-      ServiceUrl = @"http://localhost:59888/WritterService"; \\(Program.cs)
-      string _workPath = @"C:\tmp\ks\"; \\(Program.cs)
-      ```
+```
+ServiceUrl = @"http://localhost:59888/WritterService"; \\(Program.cs)
+string _workPath = @"C:\tmp\ks\"; \\(Program.cs)
+```
 
 ## сервис ReaderApiService
-      ```
-      "WorkPath":  "C:/tmp/ks/"; \\  - из файла конфигурации (appsetting.json)
-      "App Url":   http://localhost:49905/  \\ - (ReaderApiService--> Properties --> Debug)
-      ```
+```
+"WorkPath":  "C:/tmp/ks/"; \\  - из файла конфигурации (appsetting.json)
+"App Url":   http://localhost:49905/  \\ - (ReaderApiService--> Properties --> Debug)
+```
 
 ## автотесты NUnitAutoTests
-      ```
-      RestApiUrl = @"http://localhost:49905"; // Ссылка к RestApi сервису чтения данных (Tests --> BaseTests.cs)
-      WcfSoapUrl = @"http://localhost:59888/WritterService"; // Ссылка к SOAP WCF сервису (Tests --> BaseTests.cs)
-      "Uri":   "http://localhost:59888/WritterService?wsdl", // ссылка на контракт сервиса (Connected Services -> WritterWcfService -> ConnectedServices.json)
-      ```
+```
+RestApiUrl = @"http://localhost:49905"; // Ссылка к RestApi сервису чтения данных (Tests --> BaseTests.cs)
+WcfSoapUrl = @"http://localhost:59888/WritterService"; // Ссылка к SOAP WCF сервису (Tests --> BaseTests.cs)
+"Uri":   "http://localhost:59888/WritterService?wsdl", // ссылка на контракт сервиса (Connected Services -> WritterWcfService -> ConnectedServices.json)
+```
 
 ***Соответственно ссылки на сервисы и БД в разных проектах должны совпадать.***
 
